@@ -1,0 +1,28 @@
+name: Bug Report
+description: Report a false positive, false negative, or crash in agentdoc-lint
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug or unexpected diagnostic.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Share the relevant AGENTS.md / CLAUDE.md snippet and repo structure.
+      placeholder: |
+        AGENTS.md snippet:
+        ...
+        Command run:
+        agentdoc-lint check .
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Python & agentdoc-lint version
+      placeholder: "Python 3.12, agentdoc-lint 0.1.0"

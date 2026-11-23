@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools>=69.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentdoc-lint"
+version = "0.1.0"
+description = "Catch instruction drift in AGENTS.md, CLAUDE.md, SKILL.md, and .cursor/rules by verifying claims against real codebase AST and configs."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [
+  { name = "264288425a-wq" },
+]
+keywords = [
+  "agents-md",
+  "claude-md",
+  "skill-md",
+  "codex",
+  "ai-agents",
+  "linter",
+  "pre-commit",
+  "documentation",
+  "static-analysis",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Documentation",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+tiktoken = ["tiktoken>=0.7.0"]
+toml = ["tomli>=2.0.1; python_version < '3.11'"]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-cov>=5.0.0",
+  "ruff>=0.6.0",
+  "mypy>=1.11.0",
+  "build>=1.2.0",
+  "twine>=5.1.0",
+]
+
+[project.scripts]
+agentdoc-lint = "agentdoc_lint.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/264288425a-wq/agentdoc-lint"
+Repository = "https://github.com/264288425a-wq/agentdoc-lint"
+Issues = "https://github.com/264288425a-wq/agentdoc-lint/issues"
+Changelog = "https://github.com/264288425a-wq/agentdoc-lint/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+agentdoc_lint = ["py.typed"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+mypy_path = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,7 @@
+- id: agentdoc-lint
+  name: agentdoc-lint (verify AGENTS.md / CLAUDE.md / SKILL.md)
+  description: Catch stale paths, broken commands, renamed symbols, and rule conflicts in coding-agent instructions.
+  entry: agentdoc-lint check .
+  language: python
+  pass_filenames: false
+  always_run: true

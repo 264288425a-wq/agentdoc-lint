@@ -1,0 +1,74 @@
+name: "agentdoc-lint Instruction Drift Check"
+description: "Verify AGENTS.md, CLAUDE.md, SKILL.md, and .cursor/rules against real codebase AST and project configs."
+branding:
+  icon: "check-circle"
+  color: "blue"
+
+inputs:
+  path:
+    description: "Repository root path to audit."
+    required: false
+    default: "."
+  fail-on:
+    description: "Minimum severity to fail the workflow (none, info, warning, error)."
+    required: false
+    default: "error"
+  max-file-tokens:
+    description: "Maximum recommended tokens per instruction file."
+    required: false
+    default: "3000"
+  max-total-tokens:
+    description: "Maximum recommended combined tokens across all instruction files."
+    required: false
+    default: "8000"
+  sarif-output:
+    description: "Optional path to write a SARIF 2.1.0 report for GitHub Code Scanning."
+    required: false
+    default: ""
+  python-version:
+    description: "Python version to install."
+    required: false
+    default: "3.12"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install agentdoc-lint
+      shell: bash
+      run: pip install --no-cache-dir "${{ github.action_path }}"
+
+    - name: Run agentdoc-lint
+      shell: bash
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_MAX_FILE_TOKENS: ${{ inputs.max-file-tokens }}
+        INPUT_MAX_TOTAL_TOKENS: ${{ inputs.max-total-tokens }}
+        INPUT_SARIF_OUTPUT: ${{ inputs.sarif-output }}
+      run: |
+        if [ -n "$INPUT_SARIF_OUTPUT" ]; then
+          agentdoc-lint check "$INPUT_PATH" \
+            --max-file-tokens "$INPUT_MAX_FILE_TOKENS" \
+            --max-total-tokens "$INPUT_MAX_TOTAL_TOKENS" \
+            --base-dir "${{ github.workspace }}" \
+            --fail-on none \
+            --format sarif \
+            --output "$INPUT_SARIF_OUTPUT"
+        fi
+
+        agentdoc-lint check "$INPUT_PATH" \
+          --max-file-tokens "$INPUT_MAX_FILE_TOKENS" \
+          --max-total-tokens "$INPUT_MAX_TOTAL_TOKENS" \
+          --fail-on none \
+          --format markdown >> "$GITHUB_STEP_SUMMARY"
+
+        agentdoc-lint check "$INPUT_PATH" \
+          --max-file-tokens "$INPUT_MAX_FILE_TOKENS" \
+          --max-total-tokens "$INPUT_MAX_TOTAL_TOKENS" \
+          --fail-on "$INPUT_FAIL_ON" \
+          --format github

@@ -1,0 +1,9 @@
+[project]
+name = "sample-service"
+version = "0.1.0"
+
+[project.scripts]
+sample-api = "sample_service.server:run"
+
+[tool.ruff]
+line-length = 100
